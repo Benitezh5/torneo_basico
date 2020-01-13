@@ -1,0 +1,194 @@
+<script>
+	$(document).ready(function(){
+
+		mostrar();
+
+		function mostrar(){
+			$.ajax({
+				type: 'ajax',
+				url: '<?= base_url('C/get_')?>',
+				dataType: 'json',
+
+				success: function(datos){
+					var tabla="";
+					var i;
+					var n=1;
+
+					for(i=0; i<datos.length; i++){
+						tabla +=
+						"<tr>"+
+						"<td>"+datos[i].n+"</td>"+
+						
+						"<td>"+'<a href="javascript:;" class="btn btn-danger btn-sm borrar" data="'+datos[i].id_+'" >Eliminar</a>'+
+						"</td>"+
+						'<td>'+
+						'<a href="javascript:;" class="btn btn-info btn-sm item-edit" data="'+datos[i].id_+'">Editar</a>'+
+						"</tr>";
+						n++;
+
+					}
+					$("#tabla_").html(tabla);
+				}
+			});
+		};
+
+		$("#tabla_").on("click", ".borrar", function(){
+			$id=$(this).attr("data"); 
+
+			$("#modalBorrar").modal("show"); 
+
+			$("#btnBorrar").unbind().click(function(){
+				$.ajax({
+					type: "ajax",
+					method: "post",
+					url: "<?php echo base_url("C/eliminar")?>",
+					data:{id:$id},
+					dataType: "json",
+
+					success: function(respuesta){
+						$("#modalBorrar").modal("hide"); 
+						if(respuesta==true){
+							alertify.notify("Eliminado Exitosamente!", "success", 10, null);
+							mostrar();
+						}else{
+							alertify.notify("Error al Eliminar!", "error", 10, null);
+							mostrar();
+						}
+					}
+				});
+
+			});
+		});
+
+	
+   
+
+
+        $('#nue').click(function(){
+      
+          $('#').modal('show');
+     
+          $('#').find('.modal-title').text('Nuevo ');
+       
+          $('#form--').attr('action', '<?php echo base_url() ?>C/ingresar');
+        });
+
+        get_();
+
+		function get_(){
+		
+			$.ajax({
+			
+				type: 'ajax',
+				
+				url: '<?= base_url('C/get_') ?>',
+				
+				dataType: 'json',
+
+			
+				success: function(datos){
+					
+					var op = '';
+				
+					var i;
+
+					
+					op +="<option value=''>--Seleccione--</option>";
+					
+					for(i=0; i<datos.length; i++){
+			
+						op +="<option value='"+datos[i].id_+"'>"+datos[i].nombre_+"</option>";
+					}
+		
+					$('#').html(op);
+				}
+			});
+		}
+
+			$('#btnGuardar').click(function(){
+
+			
+			$url = $('#form--').attr('action');
+		
+			$data = $('#form--').serialize();
+
+		
+			$.ajax({
+				
+				type: 'ajax',
+				
+				method: 'post',
+			
+				url: $url,
+			
+				data: $data,
+			
+				dataType: 'json',
+
+				
+				success: function(respuesta){
+					
+					$('#').modal('hide');
+				
+					if(respuesta=='add'){
+						
+						alertify.notify('Ingresado exitosamente!', 'success',10, null);
+					}else if(respuesta=='edi'){
+						
+						alertify.notify('Actualizado exitosamente!', 'success',10, null);
+					}else{
+					
+						alertify.notify('error al ingresar!', 'error',10, null);
+					}
+			
+					$('#form--')[0].reset();
+			
+					mostrar();
+				}
+			});
+
+		});
+
+
+	
+		$('#tabla_').on('click', '.item-edit', function(){
+
+			var id = $(this).attr('data');
+
+			$('#').modal('show');ç
+			$('#').find('.modal-title').text('Editar ');
+			
+			$('#form--').attr('action','<?= base_url('C/actualizar')?>');
+
+			
+			$.ajax({
+			
+				type: 'ajax',
+			
+				method: 'post',
+		
+				url: '<?= base_url('C/get_datos')?>',
+			
+				data: {id:id},
+		
+				dataType: 'json',
+
+				
+				success: function(datos){
+				
+					$('#id').val(datos.id_);
+			
+					$('#').val(datos.);
+				
+					$('#').val(datos.id_);
+				}
+			});
+		});
+
+	});
+
+
+
+
+
+</script>
